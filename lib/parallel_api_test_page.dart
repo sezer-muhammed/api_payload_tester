@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:fl_chart/fl_chart.dart';
 
 class ParallelApiTestPage extends StatefulWidget {
-  const ParallelApiTestPage({Key? key}) : super(key: key);
+  const ParallelApiTestPage({super.key});
 
   @override
   State<ParallelApiTestPage> createState() => _ParallelApiTestPageState();
@@ -95,9 +95,9 @@ class _ParallelApiTestPageState extends State<ParallelApiTestPage> {
   String _selectedMethod = 'GET';
   bool _showPayload = false;
   bool _isTesting = false;
-  List<double> _allResponseTimes = [];
-  List<int> _requestsPerSecond = [];
-  List<double> _successRate = [];
+  final List<double> _allResponseTimes = [];
+  final List<int> _requestsPerSecond = [];
+  final List<double> _successRate = [];
   int _totalRequests = 0;
   int _successCount = 0;
   int _failCount = 0;

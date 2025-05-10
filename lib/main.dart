@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
       title: 'API Load Tester',
       theme: ThemeData(
         colorScheme: colorScheme,
-        scaffoldBackgroundColor: colorScheme.background,
+        scaffoldBackgroundColor: colorScheme.surface,
         appBarTheme: AppBarTheme(
           backgroundColor: colorScheme.surface, // AppBar with surface color
           foregroundColor: colorScheme.onSurface, // Text on surface
@@ -54,10 +54,10 @@ class MyApp extends StatelessWidget {
           ),
         ),
         textTheme: TextTheme(
-          titleLarge: TextStyle(fontWeight: FontWeight.bold, fontSize: 22, color: colorScheme.onBackground),
+          titleLarge: TextStyle(fontWeight: FontWeight.bold, fontSize: 22, color: colorScheme.onSurface),
           titleMedium: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: colorScheme.onSurface),
-          bodyMedium: TextStyle(color: colorScheme.onBackground.withOpacity(0.85)),
-          labelSmall: TextStyle(color: colorScheme.onBackground.withOpacity(0.6)), // For attribution text
+          bodyMedium: TextStyle(color: colorScheme.onSurface.withOpacity(0.85)),
+          labelSmall: TextStyle(color: colorScheme.onSurface.withOpacity(0.6)), // For attribution text
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
