@@ -1,3 +1,5 @@
+import 'dart:ui'; // Required for ImageFilter
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -19,7 +21,7 @@ class MyApp extends StatelessWidget {
       primary: const Color(0xFF1E88E5), // Vibrant blue for primary
       secondary: const Color(0xFF00ACC1), // Teal for secondary
       background: const Color(0xFF121212), // Dark background
-      surface: const Color(0xFF1E1E1E), // Slightly lighter dark surface
+      surface: const Color(0xFF1E1E1E).withOpacity(0.85), // Slightly lighter dark surface with opacity for glassmorphism
       onPrimary: Colors.white,
       onSecondary: Colors.black,
       onBackground: Colors.white,
@@ -31,11 +33,11 @@ class MyApp extends StatelessWidget {
       title: 'API Load Tester',
       theme: ThemeData(
         colorScheme: colorScheme,
-        scaffoldBackgroundColor: colorScheme.surface,
+        scaffoldBackgroundColor: colorScheme.background, // Use background for scaffold
         appBarTheme: AppBarTheme(
-          backgroundColor: colorScheme.surface, // AppBar with surface color
+          backgroundColor: colorScheme.surface.withOpacity(0.5), // AppBar with semi-transparent surface
           foregroundColor: colorScheme.onSurface, // Text on surface
-          elevation: 6, // Increased elevation
+          elevation: 0, // Remove elevation for a flatter, modern look with glassmorphism
           iconTheme: IconThemeData(color: colorScheme.onSurface),
           shadowColor: Colors.black.withOpacity(0.7), // Darker shadow
           titleTextStyle: TextStyle(
@@ -45,11 +47,11 @@ class MyApp extends StatelessWidget {
           ),
         ),
         cardTheme: CardTheme( // Define CardTheme for consistent card styling
-          elevation: 8,
-          color: colorScheme.surface,
-          shadowColor: Colors.black.withOpacity(0.5),
+          elevation: 0, // Remove elevation, rely on blur and border for depth
+          color: colorScheme.surface.withOpacity(0.65), // Semi-transparent card color
+          shadowColor: Colors.black.withOpacity(0.3),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(24), // More pronounced rounded corners
             side: BorderSide(color: colorScheme.onSurface.withOpacity(0.2), width: 1),
           ),
         ),
@@ -63,7 +65,29 @@ class MyApp extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: colorScheme.primary,
             foregroundColor: colorScheme.onPrimary,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18), // Rounded buttons
+            ),
+            elevation: 5, // Subtle elevation for buttons
           ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(18), // Rounded input fields
+            borderSide: BorderSide(color: colorScheme.onSurface.withOpacity(0.3)),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(18),
+            borderSide: BorderSide(color: colorScheme.onSurface.withOpacity(0.3)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(18),
+            borderSide: BorderSide(color: colorScheme.primary, width: 2),
+          ),
+          filled: true,
+          fillColor: colorScheme.surface.withOpacity(0.5), // Semi-transparent fill for inputs
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         ),
         useMaterial3: true,
       ),
@@ -97,14 +121,14 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    final horizontalMargin = screenWidth * 0.10;
-    final verticalMargin = screenHeight * 0.05; // 5% vertical margin
+    final horizontalMargin = screenWidth * 0.08; // Adjusted margin
+    final verticalMargin = screenHeight * 0.05;
 
     return Scaffold(
       appBar: AppBar(
         title: Row(
           children: [
-            FaIcon(FontAwesomeIcons.bolt, color: Theme.of(context).colorScheme.onSurface, size: 32),
+            FaIcon(FontAwesomeIcons.bolt, color: Theme.of(context).colorScheme.primary, size: 32), // Use primary color for icon
             const SizedBox(width: 12),
             Text('API Load Tester'),
           ],
@@ -112,26 +136,42 @@ class _MyHomePageState extends State<MyHomePage> {
         actions: [
           IconButton(
             icon: FaIcon(FontAwesomeIcons.bell, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8)),
-            onPressed: () {},
+            onPressed: () {
+              // TODO: Implement notification functionality
+            },
           ),
           IconButton(
             icon: FaIcon(FontAwesomeIcons.userCircle, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8)),
-            onPressed: () {},
+            onPressed: () {
+              // TODO: Implement user profile functionality
+            },
           ),
         ],
-        // elevation and shadowColor are now part of appBarTheme
       ),
-      body: Stack( // Use Stack to overlay attribution text
+      body: Stack( 
         children: [
+          // Optional: Add a subtle background pattern or gradient if desired
+          // Container(
+          //   decoration: BoxDecoration(
+          //     gradient: LinearGradient(
+          //       begin: Alignment.topLeft,
+          //       end: Alignment.bottomRight,
+          //       colors: [
+          //         Theme.of(context).colorScheme.background,
+          //         Theme.of(context).colorScheme.surface.withOpacity(0.1),
+          //       ],
+          //     ),
+          //   ),
+          // ),
           Padding(
             padding: EdgeInsets.symmetric(
               horizontal: horizontalMargin, 
-              vertical: verticalMargin // Apply vertical margin
+              vertical: verticalMargin
             ), 
             child: MasonryGridView.count(
               crossAxisCount: 2,
-              mainAxisSpacing: 16,
-              crossAxisSpacing: 16,
+              mainAxisSpacing: 20, // Increased spacing
+              crossAxisSpacing: 20, // Increased spacing
               itemCount: _cardData.length,
               itemBuilder: (context, index) {
                 final card = _cardData[index];
@@ -200,45 +240,48 @@ class _MyHomePageState extends State<MyHomePage> {
       ];
 
   Widget _buildAppCard(BuildContext context, {required IconData icon, required Color iconColor, required String title, required String description, required VoidCallback onTap}) {
-    // Card styling is now primarily handled by CardTheme
-    return Card(
-      // elevation, color, shadowColor, shape are inherited from CardTheme
-      // We can still override specific properties if needed, e.g., a unique shadow for this card type
-      // shadowColor: iconColor.withOpacity(0.6), // Example of specific override
-      child: InkWell(
-        borderRadius: BorderRadius.circular(18),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0), // Adjusted padding for new layout
-          child: Row( // Use Row for side-by-side layout
-            children: [
-              // Icon on the left
-              Container(
-                decoration: BoxDecoration(
-                  color: iconColor.withOpacity(0.15),
-                  shape: BoxShape.circle,
-                ),
-                padding: const EdgeInsets.all(20), // Increased padding for larger icon background
-                child: FaIcon(icon, size: 40, color: iconColor), // Increased icon size
-              ),
-              const SizedBox(width: 16), // Spacing between icon and text
-              // Title and Description on the right
-              Expanded( // Use Expanded to allow text to take available space and wrap
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start, // Align text to the start (left)
-                  mainAxisSize: MainAxisSize.min, // Column takes minimum vertical space
-                  children: [
-                    Text(title, style: Theme.of(context).textTheme.titleMedium),
-                    const SizedBox(height: 8),
-                    Text(
-                      description, 
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
-                      // textAlign: TextAlign.start, // Ensure description text also aligns left if needed
+    return ClipRRect( // Clip for glassmorphism effect
+      borderRadius: BorderRadius.circular(24), // Match CardTheme
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Card(
+          // elevation, color, shadowColor, shape are inherited from CardTheme
+          child: InkWell(
+            borderRadius: BorderRadius.circular(24), // Match CardTheme
+            onTap: onTap,
+            hoverColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+            splashColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+            child: Padding(
+              padding: const EdgeInsets.all(20.0), // Adjusted padding
+              child: Row( 
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: iconColor.withOpacity(0.2), // Slightly more vibrant icon background
+                      shape: BoxShape.circle,
                     ),
-                  ],
-                ),
+                    padding: const EdgeInsets.all(20), 
+                    child: FaIcon(icon, size: 36, color: iconColor), // Slightly smaller icon for balance
+                  ),
+                  const SizedBox(width: 20), 
+                  Expanded( 
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start, 
+                      mainAxisSize: MainAxisSize.min, 
+                      children: [
+                        Text(title, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 8),
+                        Text(
+                          description, 
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.75)),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
